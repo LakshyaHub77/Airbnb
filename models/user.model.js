@@ -4,14 +4,14 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    listing: {
+    listing: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Listing",
-    },
-    booking: {
+    }],
+    booking: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Booking",
-    },
+    }],
   },
   { timestamps: true }
 );

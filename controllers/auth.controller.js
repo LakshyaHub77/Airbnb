@@ -14,16 +14,55 @@ export const signUp = async (req, res) => {
       email,
       password: hashPassword,
     });
-    res.status(200).json({message:"user created successfully"})
     let token = await genToken(user._id);
+
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENVIRONMENT === "production",
-      sameSite: "strict",
+      sameSite: "lax",
     });
-    return res.status(201).json(user);
+
+    return res.status(201).json({ message: "User created successfully", user });
   } catch (err) {
-    return res.status(500).json({ message: "Signup failed", error: err });
+    return res.status(500).json({ message: "Signup failed", error: err.message });
   }
+};
+
+export const login = async (req, res) => {
+  try {
+    let { email, password } = req.body;
+    let user = await User.findOne({ email }).populate("listing","title image1 image2 image3 description rent category city landmark");
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    let token = await genToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENVIRONMENT === "production",
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({ message: "User logged in successfully", user });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
+
+export const logout = async (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENVIRONMENT === 'production',
+    sameSite: 'strict',
+  });
+  return res.status(200).json({ message: "Logged out successfully" });
 };
