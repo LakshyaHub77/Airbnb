@@ -16,10 +16,7 @@ const app = express();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://your-frontend-url.vercel.app"
-  ],
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
