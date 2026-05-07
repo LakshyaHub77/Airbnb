@@ -50,7 +50,6 @@ res.cookie("token", token, {
   secure: true,
   sameSite: "none",
 });
-
     return res.status(200).json({ message: "User logged in successfully", user });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error", error: err.message });

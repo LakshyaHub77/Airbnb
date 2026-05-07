@@ -16,7 +16,7 @@ const app = express();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: true,
+  origin: "https://air-bnb-frontend-three.vercel.app",
   credentials: true
 }));
 app.use(express.json());
